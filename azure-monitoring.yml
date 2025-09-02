@@ -1,0 +1,144 @@
+apiVersion: 2021-05-01
+location: westeurope
+name: rag-system-monitoring
+properties:
+  description: "Monitoring configuration for RAG System"
+  
+  # Application Insights
+  applicationInsights:
+    name: "rag-system-insights"
+    location: "westeurope"
+    kind: "web"
+    properties:
+      Application_Type: "web"
+      WorkspaceResourceId: "/subscriptions/{subscription-id}/resourcegroups/{resource-group}/providers/microsoft.operationalinsights/workspaces/{workspace-name}"
+  
+  # Log Analytics Workspace
+  logAnalytics:
+    name: "rag-system-logs"
+    location: "westeurope"
+    properties:
+      sku:
+        name: "PerGB2018"
+      retentionInDays: 30
+  
+  # Azure Monitor Alerts
+  alerts:
+    - name: "high-cpu-usage"
+      description: "Alert when CPU usage is high"
+      severity: 2
+      condition:
+        metricName: "CpuPercentage"
+        operator: "GreaterThan"
+        threshold: 80
+        timeAggregation: "Average"
+        windowSize: "PT5M"
+      actions:
+        - actionGroupId: "/subscriptions/{subscription-id}/resourcegroups/{resource-group}/providers/microsoft.insights/actiongroups/{action-group-name}"
+    
+    - name: "high-memory-usage"
+      description: "Alert when memory usage is high"
+      severity: 2
+      condition:
+        metricName: "MemoryPercentage"
+        operator: "GreaterThan"
+        threshold: 85
+        timeAggregation: "Average"
+        windowSize: "PT5M"
+      actions:
+        - actionGroupId: "/subscriptions/{subscription-id}/resourcegroups/{resource-group}/providers/microsoft.insights/actiongroups/{action-group-name}"
+    
+    - name: "high-response-time"
+      description: "Alert when response time is high"
+      severity: 2
+      condition:
+        metricName: "ResponseTime"
+        operator: "GreaterThan"
+        threshold: 5000
+        timeAggregation: "Average"
+        windowSize: "PT5M"
+      actions:
+        - actionGroupId: "/subscriptions/{subscription-id}/resourcegroups/{resource-group}/providers/microsoft.insights/actiongroups/{action-group-name}"
+    
+    - name: "error-rate-high"
+      description: "Alert when error rate is high"
+      severity: 1
+      condition:
+        metricName: "RequestsFailed"
+        operator: "GreaterThan"
+        threshold: 10
+        timeAggregation: "Total"
+        windowSize: "PT5M"
+      actions:
+        - actionGroupId: "/subscriptions/{subscription-id}/resourcegroups/{resource-group}/providers/microsoft.insights/actiongroups/{action-group-name}"
+  
+  # Custom Metrics
+  customMetrics:
+    - name: "rag_query_latency"
+      description: "RAG query response time in milliseconds"
+      unit: "Milliseconds"
+      aggregationType: "Average"
+    
+    - name: "rag_queries_per_minute"
+      description: "Number of RAG queries per minute"
+      unit: "Count"
+      aggregationType: "Total"
+    
+    - name: "vector_search_latency"
+      description: "Vector search response time in milliseconds"
+      unit: "Milliseconds"
+      aggregationType: "Average"
+    
+    - name: "llm_generation_latency"
+      description: "LLM response generation time in milliseconds"
+      unit: "Milliseconds"
+      aggregationType: "Average"
+  
+  # Dashboard Configuration
+  dashboard:
+    name: "rag-system-dashboard"
+    location: "westeurope"
+    properties:
+      lenses:
+        - order: 1
+          parts:
+            - position:
+                x: 0
+                y: 0
+                rowSpan: 2
+                colSpan: 3
+              metadata:
+                inputs: []
+                type: "Extension/Microsoft_OperationsManagementSuite_Workspace/PartType/LogsDashboardTile"
+                settings:
+                  content:
+                    Query: "ContainerAppConsoleLogs_CL | where ContainerAppName_s == 'rag-system-app' | summarize count() by bin(TimeGenerated, 1m)"
+                    PartTitle: "Request Rate"
+                    PartSubTitle: "Requests per minute"
+  
+  # Diagnostic Settings
+  diagnosticSettings:
+    name: "rag-system-diagnostics"
+    properties:
+      logs:
+        - category: "ContainerAppConsoleLogs"
+          enabled: true
+          retentionPolicy:
+            days: 30
+            enabled: true
+        - category: "ContainerAppSystemLogs"
+          enabled: true
+          retentionPolicy:
+            days: 30
+            enabled: true
+        - category: "ContainerAppPlatformLogs"
+          enabled: true
+          retentionPolicy:
+            days: 30
+            enabled: true
+      metrics:
+        - category: "AllMetrics"
+          enabled: true
+          retentionPolicy:
+            days: 30
+            enabled: true
