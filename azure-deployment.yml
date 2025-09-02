@@ -1,0 +1,49 @@
+apiVersion: 2021-10-01
+location: westeurope
+name: rag-system-deployment
+properties:
+  containers:
+  - name: rag-app
+    properties:
+      image: rag-system:latest
+      resources:
+        requests:
+          cpu: 2.0
+          memoryInGB: 4.0
+        limits:
+          cpu: 4.0
+          memoryInGB: 8.0
+      ports:
+      - port: 8501
+        protocol: TCP
+      environmentVariables:
+      - name: PINECONE_API_KEY
+        secureValue: "${PINECONE_API_KEY}"
+      - name: PINECONE_INDEX_NAME
+        value: "${PINECONE_INDEX_NAME}"
+      - name: AZURE_STORAGE_CONNECTION_STRING
+        secureValue: "${AZURE_STORAGE_CONNECTION_STRING}"
+      - name: AZURE_STORAGE_CONTAINER_NAME
+        value: "${AZURE_STORAGE_CONTAINER_NAME}"
+      - name: OPENAI_API_KEY
+        secureValue: "${OPENAI_API_KEY}"
+      command:
+      - streamlit
+      - run
+      - main.py
+      - --server.port
+      - "8501"
+      - --server.address
+      - "0.0.0.0"
+  osType: Linux
+  restartPolicy: Always
+  ipAddress:
+    type: Public
+    ports:
+    - protocol: TCP
+      port: 8501
+    dnsNameLabel: rag-system-${UNIQUE_ID}
+  tags:
+    environment: production
+    application: rag-system
+    version: "2.0"
