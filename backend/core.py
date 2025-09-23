@@ -5,6 +5,7 @@ from langchain import hub
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_pinecone import PineconeVectorStore
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langchain.chains import create_history_aware_retriever
 import pinecone
 
 
@@ -13,7 +14,7 @@ load_dotenv()
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
 PINECONE_INDEX_NAME = os.getenv("PINECONE_INDEX_NAME")
 
-def run_llm(query: str):
+def run_llm(query: str, chat_history: list = []): #with Chat history
     # Check if environment variables are set
     if not PINECONE_API_KEY or not PINECONE_INDEX_NAME:
         raise ValueError("PINECONE_API_KEY and PINECONE_INDEX_NAME must be set in environment variables")
@@ -31,19 +32,30 @@ def run_llm(query: str):
     retrieval_qa_chat_prompt = hub.pull("langchain-ai/retrieval-qa-chat")
     stuff_documents_chain = create_stuff_documents_chain(chat, retrieval_qa_chat_prompt) #augmentation
 
-    qa = create_retrieval_chain(retriever=vectorstore.as_retriever(), combine_docs_chain=stuff_documents_chain) #RAG Chain
-    result = qa.invoke({"input": query})
+    rephase_prompt = hub.pull("langchain-ai/chat-langchain-rephrase")
+    history_aware_retriever = create_history_aware_retriever(llm=chat, retriever=vectorstore.as_retriever(), prompt=rephase_prompt) #Adding history aware retriever 
+
+    qa = create_retrieval_chain(retriever=history_aware_retriever, combine_docs_chain=stuff_documents_chain) #RAG Chain
+    
+
+
+    # Prepare chat history in the format expected by LangChain
+    formatted_chat_history = []
+    for message_pair in chat_history:
+        if len(message_pair) == 2: 
+            formatted_chat_history.extend([
+                ("human", message_pair[0]),
+                ("ai", message_pair[1])
+            ])
+    
+    result = qa.invoke(input={"input": query, "chat_history": formatted_chat_history})
 
     new_result = {"query": result["input"], "result": result["answer"], "source": result["context"]}
 
     return new_result 
 
 if __name__ == "__main__":
-    query = "Welche Recovery Möglichkeiten hat eine relationale Datenbank?"
-    result = run_llm(query)
-    print(result["answer"])   
-
-    
+    pass
 
 
 

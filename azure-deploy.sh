@@ -6,10 +6,10 @@ set -e
 echo "🚀 Starting Azure RAG System Deployment..."
 
 # Configuration
-RESOURCE_GROUP="Prototyp2"
+RESOURCE_GROUP="rag-system-rg"
 LOCATION="westeurope"
-# Generate unique ACR name with timestamp
-ACR_NAME="ragsystem$(date +%s | tail -c 6)"
+# Use existing ACR
+ACR_NAME="ragacr1756585434"
 CONTAINER_APP_NAME="rag-system-app"
 ENVIRONMENT_NAME="rag-system-env"
 
@@ -77,13 +77,12 @@ if ! az group show --name $RESOURCE_GROUP &> /dev/null; then
     exit 1
 fi
 
-print_status "Creating Azure Container Registry..."
-# Check if ACR already exists, if yes, delete it
-if az acr show --name $ACR_NAME --resource-group $RESOURCE_GROUP &> /dev/null; then
-    print_warning "Deleting existing Container Registry: $ACR_NAME"
-    az acr delete --name $ACR_NAME --resource-group $RESOURCE_GROUP --yes
+print_status "Using existing Azure Container Registry: $ACR_NAME"
+# Check if ACR exists
+if ! az acr show --name $ACR_NAME --resource-group $RESOURCE_GROUP &> /dev/null; then
+    print_error "Container Registry $ACR_NAME not found in resource group $RESOURCE_GROUP"
+    exit 1
 fi
-az acr create --resource-group $RESOURCE_GROUP --name $ACR_NAME --sku Basic --admin-enabled true
 
 print_status "Getting ACR login server..."
 ACR_LOGIN_SERVER=$(az acr show --name $ACR_NAME --resource-group $RESOURCE_GROUP --query "loginServer" --output tsv)
