@@ -8,6 +8,9 @@ langchain-pinecone==0.2.11
 # Streamlit Web App
 streamlit==1.44.0
 
+
+chainlit==2.5.5
+
 # Azure Blob Storage
 azure-storage-blob==12.26.0
 azure-core==1.35.0
