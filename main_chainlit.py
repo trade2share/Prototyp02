@@ -1,5 +1,6 @@
 from typing import Optional, List, Tuple, Any
 import asyncio
+import hashlib
 import chainlit as cl
 from dotenv import load_dotenv, find_dotenv
 from backend.core import run_llm
@@ -16,6 +17,61 @@ def _create_sources_string(sources: List[str]) -> str:
     lines = []
     for i, source in enumerate(sources, start=1):
         lines.append(f"\n{i}. {source}")
+    return "".join(lines)
+
+
+def _create_detailed_sources_string(docs: Optional[List[Any]]) -> str:
+    """Return a formatted string with [Source, Seite, ChunkID] for each retrieved chunk.
+
+    Falls 'chunk_id' oder 'page' nicht vorhanden sind, werden sie robust
+    aus anderen Metadaten abgeleitet bzw. ein stabiler Hash erzeugt.
+    """
+    if not docs:
+        return ""
+
+    lines: List[str] = []
+    seen_keys = set()
+
+    for idx, doc in enumerate(docs, start=1):
+        metadata = getattr(doc, "metadata", {}) or {}
+        page_content = getattr(doc, "page_content", "") or ""
+
+        source = (
+            metadata.get("source")
+            or metadata.get("file_path")
+            or metadata.get("filepath")
+            or "Unbekannt"
+        )
+
+        page = metadata.get("page_number")
+        if page is None:
+            page = metadata.get("page_number")
+        if page is None:
+            page = metadata.get("page_index")
+
+        chunk_id = (
+            metadata.get("chunk_id")
+            or metadata.get("id")
+            or metadata.get("doc_id")
+        )
+
+        if not chunk_id:
+            # Erzeuge stabilen, kurzen Hash basierend auf Quelle, Seite und Content-Auszug
+            hash_input = f"{source}|{page}|{page_content[:80]}".encode("utf-8", "ignore")
+            chunk_id = hashlib.sha1(hash_input).hexdigest()[:8]
+
+        key = (str(source), str(page), str(chunk_id))
+        if key in seen_keys:
+            continue
+        seen_keys.add(key)
+
+        line = f"\n{idx}. {source}"
+        if page is not None:
+            line += f", Seite: {page}"
+        line += f", ChunkID: {chunk_id}"
+
+        lines.append(line)
+
     return "".join(lines)
 
 
@@ -65,14 +121,9 @@ async def on_message(message: cl.Message):
         loop = asyncio.get_running_loop()
         result: Any = await loop.run_in_executor(None, lambda: run_llm(query=message.content, chat_history=formatted_history))
 
-        # Extract sources
-        sources_set = set()
-        if isinstance(result, dict) and "source" in result and result["source"]:
-            for doc in result["source"]:
-                if hasattr(doc, "metadata") and isinstance(doc.metadata, dict) and "source" in doc.metadata:
-                    sources_set.add(doc.metadata["source"])
-
-        formatted_response = f"{result.get('result', '')} \n\n Quelle: {_create_sources_string(list(sources_set))}"
+        # Extract detailed sources: [Source, Seite, ChunkID] for all chunks
+        detailed_sources = _create_detailed_sources_string(result.get("source") if isinstance(result, dict) else None)
+        formatted_response = f"{result.get('result', '')} \n\n Quellen (Dokument/Seite/Chunk): {detailed_sources}"
 
         # Update history
         user_prompts.append(message.content)
