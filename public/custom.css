@@ -68,6 +68,34 @@
   background-position: center;
 }
 
+/* Robust login-only logo fallback: hide any <img alt*="logo"> within login and paint background */
+.cl-login img[alt*='logo' i] {
+  display: none !important;
+}
+
+/* Also hide Chainlit dynamic logo endpoint in login (e.g., /logo?theme=...) */
+.cl-login img[src*='/logo'] {
+  display: none !important;
+}
+
+.cl-login [class*='logo' i],
+.cl-login .cl-logo {
+  background-image: url('/public/2023-06-06-Spitzner-Logo-RGB-2.png') !important;
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  background-position: left center !important;
+  display: inline-block !important;
+  width: 160px !important;
+  height: 36px !important;
+  min-height: 36px !important;
+}
+
+/* Ensure any logo <img> stays hidden so background shows (login only) */
+.cl-login .cl-logo img,
+.cl-login img[alt*='logo' i] {
+  display: none !important;
+}
+
 /* Accent color overrides */
 button,
 .cl-button,
@@ -101,15 +129,19 @@ a:hover,
   color: var(--brand-primary-hover) !important;
 }
 
-/* Focus rings and inputs */
+/* Focus rings and inputs: remove blue box */
 input:focus,
 textarea:focus,
 select:focus,
-.focus-ring,
 [data-cy*='input']:focus {
-  outline-color: var(--brand-ring) !important;
-  box-shadow: 0 0 0 3px var(--brand-ring) !important;
-  border-color: var(--brand-primary) !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: inherit !important;
+}
+
+.focus-ring {
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 /* Floating upload button (pink circle in UI) */
@@ -129,27 +161,6 @@ select:focus,
   border-color: var(--brand-primary-hover) !important;
 }
 
-/* Replace loading spinner with brand image */
-.cl-spinner svg,
-.cl-loader svg,
-.cl-page-loader svg,
-.cl-spinner .spinner,
-.cl-loader .spinner,
-.cl-page-loader .spinner,
-svg.animate-spin {
-  display: none !important;
-}
-
-.cl-spinner,
-.cl-loader,
-.cl-page-loader,
-[data-cy='loader'] {
-  width: 56px;
-  height: 56px;
-  background-image: url('/public/spitznerloading.jpeg') !important;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-}
+/* Loading spinner: use Chainlit's default animation (brand image override removed) */
 
 
