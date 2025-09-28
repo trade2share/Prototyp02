@@ -1,9 +1,4 @@
 
+## Spitzner RAG-System 
 
-
-- Melde dich über "Login with Microsoft" an.
-- Stelle danach Fragen im Chat.
-
-[features]
-# Aktiviert das Speichern und Laden von Chat-Verläufen
-enable_chat_history = true
+Die App bietet den Retrieval-Prozess, der Dokumente präzise durchsucht und die relevantesten Inhalte zurückliefert. Informationen lassen sich dadurch schnell und zuverlässig finden, ohne aufwändige Recherche.

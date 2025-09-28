@@ -3,7 +3,8 @@ import asyncio
 import hashlib
 import chainlit as cl
 from dotenv import load_dotenv, find_dotenv
-from backend.core import run_llm
+from backend.core import run_llm, run_llm_async
+from langchain_core.callbacks import AsyncCallbackHandler
 
 # Robustly load .env from project root
 _dotenv_path = find_dotenv(usecwd=True)
@@ -83,6 +84,39 @@ def _format_chat_history_for_backend(chat_history: List[Tuple[str, str]]) -> Lis
     return formatted
 
 
+class UIProgressHandler(AsyncCallbackHandler):
+    def __init__(self, status_msg: cl.Message) -> None:
+        self.status_msg = status_msg
+        self.llm_call_count = 0
+
+    async def _set(self, text: str) -> None:
+        self.status_msg.content = text
+        await self.status_msg.update()
+
+    async def on_llm_start(self, serialized, prompts, **kwargs) -> None:
+        # First LLM: rephrase/history aware query; second LLM: final answer
+        self.llm_call_count += 1
+        if self.llm_call_count == 1:
+            await self._set("Rephrase / Kontext aufbereiten…")
+        else:
+            await self._set("Antwort wird erstellt…")
+
+    async def on_retriever_start(self, serialized, query, **kwargs) -> None:
+        await self._set("Dokumente werden gesucht (Retrieval)…")
+
+    async def on_retriever_end(self, documents, **kwargs) -> None:
+        await self._set("Dokumente kombiniert…")
+
+    async def on_chain_start(self, serialized, inputs, **kwargs) -> None:
+        # Heuristik: combine/stuff chain erkannt -> kombinierte Dokumente
+        try:
+            name = (serialized.get("id", {}) or {}).get("name") or serialized.get("name") or ""
+        except Exception:
+            name = ""
+        if isinstance(name, str) and ("combine" in name.lower() or "stuff" in name.lower()):
+            await self._set("Dokumente kombiniert…")
+
+
 @cl.on_chat_start
 async def start():
     if cl.user_session.get("user_prompt_history") is None:
@@ -117,9 +151,15 @@ async def on_message(message: cl.Message):
     await status_msg.send()
 
     try:
-        # Offload sync backend function to a thread to avoid blocking event loop
-        loop = asyncio.get_running_loop()
-        result: Any = await loop.run_in_executor(None, lambda: run_llm(query=message.content, chat_history=formatted_history))
+        # Animated steps + custom phase labels
+        lc_cb = cl.LangchainCallbackHandler(stream_final_answer=True)
+        ui_cb = UIProgressHandler(status_msg)
+
+        result: Any = await run_llm_async(
+            query=message.content,
+            chat_history=formatted_history,
+            callbacks=[lc_cb, ui_cb],
+        )
 
         # Extract detailed sources: [Source, Seite, ChunkID] for all chunks
         detailed_sources = _create_detailed_sources_string(result.get("source") if isinstance(result, dict) else None)

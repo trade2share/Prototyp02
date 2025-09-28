@@ -98,7 +98,7 @@ default_theme = "light"
 # description = ""
 
 # Chain of Thought (CoT) display mode. Can be "hidden", "tool_call" or "full".
-cot = "tool_call"
+cot = "hidden"
 
 # Specify a CSS file that can be used to customize the user interface.
 # The CSS file can be served from the public directory or via an external link.
@@ -118,33 +118,32 @@ alert_style = "classic"
 # custom_js_attributes = "async type = \"module\""
 
 
-login_page_image = "/public/spitznerloading.jpeg"
-logo = "/public/spitznerloading.jpeg"
+login_page_image = "/public/Schwarzwald.png"
+logo = "/public/2023-06-06-Spitzner-Logo-RGB-2.png"
 # Some builds use explicit logo_url keys for the header/logo
-logo_url = "./public/spitznerloading.jpeg"
-logo_url_light = "./public/spitznerloading.jpeg"
-logo_url_dark = "./public/spitznerloading.jpeg"
+logo_url = "/public/2023-06-06-Spitzner-Logo-RGB-2.png"
+logo_url_light = "/public/2023-06-06-Spitzner-Logo-RGB-2.png"
+logo_url_dark = "/public/2023-06-06-Spitzner-Logo-RGB-2.png"
 # Custom login page image filter (Tailwind internal filters, no dark/light variants)
-# login_page_image_filter = "brightness-50 grayscale"
-# login_page_image_dark_filter = "contrast-200 blur-sm"
+
 
 
 
 # Explicit login logo for top-left on the login screen (light/dark)
-login_logo = "/public/2023-06-06-Spitzner-Logo-RGB.png"
-login_logo_light = "/public/2023-06-06-Spitzner-Logo-RGB.png"
-login_logo_dark = "/public/2023-06-06-Spitzner-Logo-RGB.png"
+login_logo = "/public/2023-06-06-Spitzner-Logo-RGB-2.png"
+login_logo_light = "/public/2023-06-06-Spitzner-Logo-RGB-2.png"
+login_logo_dark = "/public/2023-06-06-Spitzner-Logo-RGB-2.png"
 
 # custom_meta_image_url = "/public/spitznerloading.jpeg"
-logo_light = "./public/spitznerloading.jpeg"
-logo_dark = "./public/spitznerloading.jpeg"
+logo_light = "/public/2023-06-06-Spitzner-Logo-RGB-2.png"
+logo_dark = "/public/2023-06-06-Spitzner-Logo-RGB-2.png"
 
 # Load assistant logo directly from URL.
 # Using absolute URL to avoid relative path resolution issues in login/header
-logo_file_url = "./public/spitznerloading.jpeg"
+logo_file_url = "./public/2023-06-06-Spitzner-Logo-RGB-2.png"
 
 # Load assistant avatar image directly from URL.
-default_avatar_file_url = "./public/spitznerloading.jpeg"
+default_avatar_file_url = "/public/spitznerloading.jpeg"
 
 [UI.theme.light]
 background = "#10203E"
