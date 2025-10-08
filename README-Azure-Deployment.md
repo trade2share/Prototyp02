@@ -236,17 +236,17 @@ az role assignment create \
 ### Lokales Testing
 
 ```bash
-# Docker Image lokal testen
-docker run -p 8501:8501 --env-file .env rag-system:latest
+# Docker Image lokal testen (Chainlit)
+docker run -p 8000:8000 --env-file .env rag-system:latest
 
-# Streamlit App öffnen: http://localhost:8501
+# Chainlit App öffnen: http://localhost:8000
 ```
 
 ### Azure Testing
 
 ```bash
 # Health Check
-curl -f https://{app-url}/_stcore/health
+curl -f https://{app-url}/
 
 # Load Testing
 ab -n 1000 -c 10 https://{app-url}/

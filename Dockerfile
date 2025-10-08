@@ -25,16 +25,16 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY . .
 
-# Expose Streamlit port
-EXPOSE 8501
+# Expose Chainlit port
+EXPOSE 8000
 
 # Set environment variables
 ENV PYTHONPATH=/app
-ENV STREAMLIT_SERVER_PORT=8501
-ENV STREAMLIT_SERVER_ADDRESS=0.0.0.0
+ENV CHAINLIT_PORT=8000
+ENV CHAINLIT_HOST=0.0.0.0
 
-# Health check
-HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health
+# Health check (Chainlit root should return 200)
+HEALTHCHECK CMD curl --fail http://localhost:8000/ || exit 1
 
-# Run the application
-CMD ["streamlit", "run", "main.py", "--server.port=8501", "--server.address=0.0.0.0"]
+# Run the application (Chainlit)
+CMD ["chainlit", "run", "main_chainlit.py", "--port", "8000", "--host", "0.0.0.0"]

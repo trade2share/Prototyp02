@@ -1,4 +1,4 @@
-# Docker Commands für Azure Container Registry
+# Docker Commands (Chainlit) für Azure Container Registry
 
 ## 1. Docker Image bauen
 ```bash
@@ -23,7 +23,7 @@ docker push your-registry-name.azurecr.io/rag-prototyp:latest
 
 ## 5. Container lokal testen
 ```bash
-docker run -p 8501:8501 rag-prototyp:latest
+docker run -p 8000:8000 --env-file .env rag-prototyp:latest
 ```
 
 ## 6. Container in Azure Container Instances deployen
@@ -32,7 +32,7 @@ az container create \
   --resource-group your-resource-group \
   --name rag-prototyp \
   --image your-registry-name.azurecr.io/rag-prototyp:latest \
-  --ports 8501 \
+  --ports 8000 \
   --dns-name-label your-dns-label \
   --environment-variables \
     PINECONE_API_KEY="your-pinecone-key" \
@@ -44,4 +44,4 @@ az container create \
 - Ersetzen Sie alle Platzhalter (your-*) mit Ihren tatsächlichen Werten
 - Stellen Sie sicher, dass Sie bei Azure angemeldet sind (`az login`)
 - Die Umgebungsvariablen müssen beim Deployment gesetzt werden
-- Der Container läuft auf Port 8501 (Streamlit Standard)
+- Der Container läuft auf Port 8000 (Chainlit)

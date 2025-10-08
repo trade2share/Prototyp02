@@ -5,8 +5,7 @@ langchain-core==0.3.75
 langchain-openai==0.3.27
 langchain-pinecone==0.2.11
 
-# Streamlit Web App
-streamlit==1.44.0
+# Streamlit removed; Chainlit-only app
 
 
 chainlit==2.5.5
@@ -83,7 +82,7 @@ marshmallow==3.26.1
 typing-inspect==0.9.0
 mypy-extensions==1.1.0
 emoji==2.14.1
-python-multipart==0.0.20
+python-multipart==0.0.18
 huggingface-hub==0.34.4
 matplotlib==3.10.3
 scipy==1.15.3

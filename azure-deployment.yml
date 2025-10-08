@@ -14,7 +14,7 @@ properties:
           cpu: 4.0
           memoryInGB: 8.0
       ports:
-      - port: 8501
+      - port: 8000
         protocol: TCP
       environmentVariables:
       - name: PINECONE_API_KEY
@@ -28,12 +28,12 @@ properties:
       - name: OPENAI_API_KEY
         secureValue: "${OPENAI_API_KEY}"
       command:
-      - streamlit
+      - chainlit
       - run
-      - main.py
-      - --server.port
-      - "8501"
-      - --server.address
+      - main_chainlit.py
+      - --port
+      - "8000"
+      - --host
       - "0.0.0.0"
   osType: Linux
   restartPolicy: Always
@@ -41,7 +41,7 @@ properties:
     type: Public
     ports:
     - protocol: TCP
-      port: 8501
+      port: 8000
     dnsNameLabel: rag-system-${UNIQUE_ID}
   tags:
     environment: production

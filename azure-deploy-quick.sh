@@ -64,7 +64,7 @@ az containerapp create \
     --resource-group $RG \
     --environment $ENV \
     --image $ACR.azurecr.io/rag-system:latest \
-    --target-port 8501 \
+    --target-port 8000 \
     --ingress external \
     --cpu 2.0 \
     --memory 4.0Gi \

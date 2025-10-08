@@ -122,7 +122,7 @@ az containerapp create \
     --resource-group $RESOURCE_GROUP \
     --environment $ENVIRONMENT_NAME \
     --image $ACR_LOGIN_SERVER/rag-system:latest \
-    --target-port 8501 \
+    --target-port 8000 \
     --ingress external \
     --cpu 2.0 \
     --memory 4.0Gi \
