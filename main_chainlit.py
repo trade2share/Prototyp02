@@ -3,7 +3,7 @@ import asyncio
 import hashlib
 import chainlit as cl
 from dotenv import load_dotenv, find_dotenv
-from backend.core import run_llm, run_llm_async
+from backend.core import run_llm_async
 from langchain_core.callbacks import AsyncCallbackHandler
 
 # Robustly load .env from project root
@@ -161,9 +161,8 @@ async def on_message(message: cl.Message):
             callbacks=[lc_cb, ui_cb],
         )
 
-        # Extract detailed sources: [Source, Seite, ChunkID] for all chunks
-        detailed_sources = _create_detailed_sources_string(result.get("source") if isinstance(result, dict) else None)
-        formatted_response = f"{result.get('result', '')} \n\n Quellen (Dokument/Seite/Chunk): {detailed_sources}"
+        # Verwende die vom Backend bereits formatierte Antwort inkl. Quellen
+        formatted_response = result.get("result", "") if isinstance(result, dict) else str(result)
 
         # Update history
         user_prompts.append(message.content)
