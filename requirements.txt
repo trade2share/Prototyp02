@@ -3,7 +3,6 @@ langchain==0.3.25
 langchain-community==0.3.25
 langchain-core==0.3.75
 langchain-openai==0.3.27
-langchain-pinecone==0.2.11
 
 # Streamlit removed; Chainlit-only app
 
@@ -14,8 +13,9 @@ chainlit==2.5.5
 azure-storage-blob==12.26.0
 azure-core==1.35.0
 
-# Pinecone Vector Database
-pinecone==6.0.2
+# Azure AI Search
+azure-search-documents==11.6.0b8
+azure-identity==1.21.0
 
 # OpenAI
 openai==1.86.0

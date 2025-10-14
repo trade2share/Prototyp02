@@ -35,9 +35,14 @@ az container create \
   --ports 8000 \
   --dns-name-label your-dns-label \
   --environment-variables \
-    PINECONE_API_KEY="your-pinecone-key" \
-    PINECONE_INDEX_NAME="your-index-name" \
-    OPENAI_API_KEY="your-openai-key"
+    AZURE_OPENAI_API_KEY="your-azure-openai-key" \
+    AZURE_OPENAI_ENDPOINT="your-azure-openai-endpoint" \
+    AZURE_OPENAI_API_VERSION="2024-02-01" \
+    AZURE_AI_SEARCH_SERVICE_NAME="your-search-service-name" \
+    AZURE_AI_SEARCH_INDEX_NAME="your-index-name" \
+    AZURE_AI_SEARCH_API_KEY="your-search-api-key" \
+    AZURE_STORAGE_CONNECTION_STRING="your-storage-connection-string" \
+    AZURE_STORAGE_CONTAINER_NAME="your-container-name"
 ```
 
 ## Wichtige Hinweise:

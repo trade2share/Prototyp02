@@ -17,16 +17,22 @@ properties:
       - port: 8000
         protocol: TCP
       environmentVariables:
-      - name: PINECONE_API_KEY
-        secureValue: "${PINECONE_API_KEY}"
-      - name: PINECONE_INDEX_NAME
-        value: "${PINECONE_INDEX_NAME}"
+      - name: AZURE_OPENAI_API_KEY
+        secureValue: "${AZURE_OPENAI_API_KEY}"
+      - name: AZURE_OPENAI_ENDPOINT
+        value: "${AZURE_OPENAI_ENDPOINT}"
+      - name: AZURE_OPENAI_API_VERSION
+        value: "${AZURE_OPENAI_API_VERSION}"
+      - name: AZURE_AI_SEARCH_SERVICE_NAME
+        value: "${AZURE_AI_SEARCH_SERVICE_NAME}"
+      - name: AZURE_AI_SEARCH_INDEX_NAME
+        value: "${AZURE_AI_SEARCH_INDEX_NAME}"
+      - name: AZURE_AI_SEARCH_API_KEY
+        secureValue: "${AZURE_AI_SEARCH_API_KEY}"
       - name: AZURE_STORAGE_CONNECTION_STRING
         secureValue: "${AZURE_STORAGE_CONNECTION_STRING}"
       - name: AZURE_STORAGE_CONTAINER_NAME
         value: "${AZURE_STORAGE_CONTAINER_NAME}"
-      - name: OPENAI_API_KEY
-        secureValue: "${OPENAI_API_KEY}"
       command:
       - chainlit
       - run

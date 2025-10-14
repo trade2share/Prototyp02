@@ -8,14 +8,20 @@ Dieser Guide beschreibt, wie Sie das RAG-System auf Azure deployen und für die 
 
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   User Browser  │───▶│  Azure Container │───▶│  Pinecone       │
-│                 │    │  Apps (Scalable) │    │  Vector DB      │
+│   User Browser  │───▶│  Azure Container │───▶│  Azure AI       │
+│                 │    │  Apps (Scalable) │    │  Search         │
 └─────────────────┘    └──────────────────┘    └─────────────────┘
                                 │
                                 ▼
                        ┌──────────────────┐
                        │ Azure Blob       │
                        │ Storage          │
+                       └──────────────────┘
+                                │
+                                ▼
+                       ┌──────────────────┐
+                       │ Azure OpenAI     │
+                       │                  │
                        └──────────────────┘
 ```
 
@@ -25,7 +31,9 @@ Dieser Guide beschreibt, wie Sie das RAG-System auf Azure deployen und für die 
 - Azure Subscription mit ausreichenden Berechtigungen
 - Docker installiert
 - Python 3.11+
-- Alle API-Keys (OpenAI, Pinecone, Azure)
+- Azure OpenAI Service eingerichtet
+- Azure AI Search Service eingerichtet
+- Azure Blob Storage Account eingerichtet
 
 ## 🚀 Schnellstart
 
@@ -108,11 +116,14 @@ az containerapp create \
     --min-replicas 1 \
     --max-replicas 10 \
     --env-vars \
-        PINECONE_API_KEY="$PINECONE_API_KEY" \
-        PINECONE_INDEX_NAME="$PINECONE_INDEX_NAME" \
+        AZURE_OPENAI_API_KEY="$AZURE_OPENAI_API_KEY" \
+        AZURE_OPENAI_ENDPOINT="$AZURE_OPENAI_ENDPOINT" \
+        AZURE_OPENAI_API_VERSION="$AZURE_OPENAI_API_VERSION" \
+        AZURE_AI_SEARCH_SERVICE_NAME="$AZURE_AI_SEARCH_SERVICE_NAME" \
+        AZURE_AI_SEARCH_INDEX_NAME="$AZURE_AI_SEARCH_INDEX_NAME" \
+        AZURE_AI_SEARCH_API_KEY="$AZURE_AI_SEARCH_API_KEY" \
         AZURE_STORAGE_CONNECTION_STRING="$AZURE_STORAGE_CONNECTION_STRING" \
-        AZURE_STORAGE_CONTAINER_NAME="$AZURE_STORAGE_CONTAINER_NAME" \
-        OPENAI_API_KEY="$OPENAI_API_KEY"
+        AZURE_STORAGE_CONTAINER_NAME="$AZURE_STORAGE_CONTAINER_NAME"
 ```
 
 ## 📈 Skalierung
