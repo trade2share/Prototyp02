@@ -7,6 +7,19 @@
   --brand-ring: rgba(23, 34, 90, 0.35);
 }
 
+/* Force Spitzner Logo everywhere */
+.cl-logo img,
+.cl-avatar img,
+[data-cy='header'] img,
+.cl-message .cl-avatar img,
+.assistant-avatar img {
+  content: url('/public/spitznerloading.jpeg') !important;
+  background-image: url('/public/spitznerloading.jpeg') !important;
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+}
+
 /* Header brand logo */
 [data-cy='header'] img, 
 .cl-logo img, 

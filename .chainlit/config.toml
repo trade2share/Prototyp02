@@ -22,6 +22,11 @@ mask_user_env = false
 # Authorized origins
 allow_origins = ["*"]
 
+# Custom branding
+name = "Spitzner RAG System"
+description = "Intelligente Datenbankberatung mit KI"
+logo = "/public/spitznerloading.jpeg"
+
 [features]
 # Process and display HTML in messages. This can be a security risk (see https://stackoverflow.com/questions/19603097/why-is-it-dangerous-to-render-user-generated-html-or-javascript)
 unsafe_allow_html = false
@@ -86,7 +91,7 @@ reaction_on_message_received = false
 
 [UI]
 # Name of the assistant.
-name = "Assistant"
+name = "Spitzner Assistant"
 
 # default_theme = "dark"
 
@@ -95,7 +100,10 @@ name = "Assistant"
 # default_sidebar_state = "open"
 
 # Description of the assistant. This is used for HTML tags.
-# description = ""
+description = "Intelligente Datenbankberatung mit KI"
+
+# Custom logo for the assistant
+logo = "/public/spitznerloading.jpeg"
 
 # Chain of Thought (CoT) display mode. Can be "hidden", "tool_call" or "full".
 cot = "hidden"
